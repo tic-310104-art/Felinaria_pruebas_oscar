@@ -1,0 +1,25 @@
+export default function SpaceMarineHelmetIcon({ size = 24, className = '', ...props }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 64 64"
+      className={className}
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="M20 45h24l2 7c.4 1.6-.8 3-2.4 3H20.4C18.8 55 17.6 53.6 18 52l2-7Z" fill="#20313c" stroke="#0b1419" strokeWidth="1.4" />
+      <path d="M32 5.5c-8.8 0-15 5.2-16.2 12.6L15.2 27c-.4 3 1 6 3.5 8.6l4.3 4.6-1.5 2.8c-.8 1.5.2 3.3 1.9 3.4l2.2.1c4.2.2 8.6.2 12.8 0l2.2-.1c1.7-.1 2.7-1.9 1.9-3.4l-1.5-2.8 4.3-4.6c2.5-2.6 3.9-5.6 3.5-8.6l-.6-8.9C46.7 10.7 40.8 5.5 32 5.5Z" fill="#8fb4c9" stroke="#16242d" strokeWidth="1.5" />
+      <path d="M32 6.5v13" stroke="#d8b45e" strokeWidth="2.6" strokeLinecap="round" />
+      <path d="M18 21.5h28" stroke="#d8b45e" strokeWidth="1.6" />
+      <path d="M20.2 24.5l8.2 1.7-.8 3.5-8-1.6z" fill="#d53a2c" stroke="#4c120c" strokeWidth="0.8" />
+      <path d="M43.8 24.5l-8.2 1.7.8 3.5 8-1.6z" fill="#d53a2c" stroke="#4c120c" strokeWidth="0.8" />
+      <path d="M27.2 29.5h9.6l-1.1 15.7c-.1 1.4-1.3 2.5-2.7 2.5h-2c-1.4 0-2.6-1.1-2.7-2.5l-1.1-15.7Z" fill="#6f92a8" stroke="#1b2d39" strokeWidth="1.1" />
+      <path d="M29.5 32v12.5M32 32v13M34.5 32v12.5" stroke="#203440" strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M28.4 36h7.2M28.4 40h7.2" stroke="#203440" strokeWidth="1" />
+      <path d="M18.8 32l4.2 1M18.3 35l4.4 1M43.7 33l-4.2 1M44.2 36l-4.4 1" stroke="#203440" strokeWidth="1.2" strokeLinecap="round" />
+      <rect x="12.5" y="25.5" width="4" height="9" rx="2" fill="#d8b45e" stroke="#16242d" strokeWidth="0.8" />
+      <rect x="47.5" y="25.5" width="4" height="9" rx="2" fill="#d8b45e" stroke="#16242d" strokeWidth="0.8" />
+    </svg>
+  )
+}

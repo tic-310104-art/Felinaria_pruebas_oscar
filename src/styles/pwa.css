@@ -1,0 +1,12 @@
+.pwa-controls { width: min(100% - 40px, 640px); margin-inline: auto; }
+.pwa-messages { position: fixed; z-index: 30; top: max(84px, env(safe-area-inset-top)); right: 16px; display: grid; gap: 12px; width: min(400px, calc(100% - 32px)); max-height: calc(100dvh - 110px); overflow-y: auto; }
+.pwa-messages:empty { display: none; }
+.site-header:has(.mobile-navigation:not([hidden])) { z-index: 40; }
+.pwa-status, .pwa-update { padding: 16px 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); font-size: 0.85rem; }
+.pwa-status { display: flex; align-items: center; gap: 12px; }
+.pwa-status .icon-button { flex-shrink: 0; margin-left: auto; }
+.pwa-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 12px; }
+.pwa-install { display: flex; margin: 0 auto max(24px, env(safe-area-inset-bottom)); }
+.pwa-update-reminder { justify-self: end; padding: 8px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); }
+.photo-fallback .photo-unavailable { font-family: var(--sans); font-size: 0.8rem; text-align: center; padding-inline: 12px; }
+.photo-fallback .text-button { font-family: var(--sans); }

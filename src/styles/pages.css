@@ -1,0 +1,85 @@
+.home-hero { display: grid; gap: 40px; padding-block: 38px 46px; }
+.hero-copy { padding-top: 8px; }
+.hero-copy > .eyebrow { color: var(--accent-ink); font-size: 0.62rem; }
+.hero-copy h1 { margin-block: 23px; font-size: clamp(3rem, 6.2vw, 5.3rem); letter-spacing: -0.045em; }
+.hero-copy h1 em { display: block; }
+.desktop-break { display: none; }
+.hero-description { max-width: 420px; font-size: 0.93rem; line-height: 1.9; }
+.hero-copy .button { margin-top: 28px; }
+.hero-footnote { display: flex; align-items: center; gap: 10px; margin-top: 26px; color: var(--muted); font-size: 0.7rem; }
+.hero-footnote svg { color: var(--forest); }
+.hero-visual { position: relative; height: 390px; min-width: 0; }
+.hero-visual > .recipe-photo { border-radius: 90px 10px 10px 10px; object-position: center; }
+.hero-recipe-link { display: flex; justify-content: space-between; align-items: center; gap: 20px; position: absolute; bottom: 20px; right: 16px; left: 16px; padding: 18px 22px; background: var(--ivory); border: 1px solid #ffffff80; border-radius: 7px; }
+.hero-recipe-link .eyebrow { font-size: 0.57rem; color: var(--muted); letter-spacing: 0.12em; }
+.hero-recipe-link strong { display: block; font-family: var(--serif); font-weight: 400; color: var(--forest); font-size: 1.75rem; line-height: 1.4; }
+.hero-recipe-time { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.68rem; }
+.round-arrow { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border: 1px solid #c5caba; border-radius: 50%; color: var(--forest); transition: background var(--transition), color var(--transition); }
+.hero-recipe-link:hover .round-arrow { background: var(--forest); color: white; }
+.homemade-seal { display: none; }
+.values-strip { border-block: 1px solid var(--line); }
+.values-strip > div { display: flex; justify-content: center; flex-wrap: wrap; gap: 18px 35px; padding-block: 23px; }
+.values-strip span { display: flex; align-items: center; gap: 10px; color: var(--forest); font-size: 0.73rem; }
+.values-strip svg { color: #6b775b; }
+.philosophy-wrap { padding-bottom: 64px; }
+.philosophy-panel { background: var(--forest); color: var(--ivory); padding: 40px 26px; border-radius: var(--radius); display: grid; gap: 36px; }
+.philosophy-copy .eyebrow { color: var(--gold); font-size: 0.62rem; }
+.philosophy-copy h2 { color: var(--ivory); font-size: clamp(2rem, 3.2vw, 3rem); margin-top: 17px; line-height: 1.2; }
+.philosophy-copy h2 em { color: var(--gold); }
+.philosophy-copy p:not(.eyebrow) { color: #d1d7cc; font-size: 0.86rem; line-height: 1.9; max-width: 500px; margin-top: 20px; }
+.philosophy-copy .text-link { color: var(--ivory); margin-top: 18px; }
+.philosophy-copy .text-link:hover { color: var(--gold); }
+.philosophy-copy :focus-visible { outline-color: var(--gold); }
+.philosophy-symbol { display: none; }
+.page-heading { text-align: center; max-width: 850px; margin-inline: auto; }
+.page-heading .eyebrow { justify-content: center; margin-bottom: 18px; }
+.page-heading h1 { font-size: clamp(2.75rem, 5vw, 4.5rem); }
+.page-heading > p:last-child { margin-top: 22px; font-size: 0.93rem; line-height: 1.85; }
+.catalog-tools { margin-top: 28px; }
+.catalog-note { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 55px; padding: 32px 20px; border-block: 1px solid var(--line); }
+.catalog-note > span { font-size: 2.3rem; color: var(--accent-ink); }
+.catalog-note p { font-size: 0.82rem; }
+.catalog-note strong { font-weight: 500; color: var(--forest); }
+.favorites-page { min-height: 65vh; }
+.favorites-page .page-heading { margin-bottom: 30px; }
+.privacy-note { text-align: center; font-size: 0.74rem; margin-top: 30px; }
+.not-found { text-align: center; padding-block: 65px 85px; }
+.not-found .eyebrow { justify-content: center; }
+.not-found-art { display: flex; align-items: center; justify-content: center; gap: 12px; font-family: var(--serif); font-size: 6rem; color: #6b775b; line-height: 1.3; margin-block: 15px; }
+.not-found-art svg { width: 80px; height: 80px; }
+.not-found h1 { font-size: clamp(2.7rem, 4vw, 3.8rem); }
+.not-found p { margin-block: 25px; font-size: 0.9rem; }
+@media (min-width: 600px) {
+  .hero-copy h1 { max-width: 620px; }
+  .hero-visual { height: 500px; }
+  .hero-recipe-link { left: auto; min-width: 285px; right: 26px; bottom: 26px; }
+  .homemade-seal { display: flex; position: absolute; top: 25px; right: 25px; width: 114px; height: 114px; border-radius: 50%; background: var(--ivory); border: 1px solid #d8cdbb; outline: 5px solid var(--ivory); flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--forest); transform: rotate(12deg); }
+  .homemade-seal span { font-size: 0.49rem; letter-spacing: 0.1em; }
+  .homemade-seal svg { color: var(--accent-ink); }
+  .philosophy-panel { padding: 48px; }
+}
+@media (min-width: 900px) {
+  .home-hero { grid-template-columns: 1fr 0.94fr; align-items: center; gap: 52px; padding-block: 55px 60px; }
+  .hero-copy { padding-block: 16px; }
+  .hero-copy h1 { margin-block: 26px; }
+  .desktop-break { display: inline; }
+  .hero-copy .button { margin-top: 32px; }
+  .hero-footnote { margin-top: 40px; }
+  .hero-visual { height: 555px; }
+  .hero-visual > .recipe-photo { border-top-left-radius: 125px; }
+  .homemade-seal { left: -39px; top: auto; right: auto; bottom: 175px; }
+  .hero-recipe-link { min-width: 270px; left: 70px; }
+  .values-strip > div { justify-content: space-around; padding-block: 25px; }
+  .values-strip span { font-size: 0.77rem; }
+  .philosophy-panel { grid-template-columns: 0.75fr 1.35fr; gap: 65px; padding: 55px 65px; align-items: center; }
+  .philosophy-symbol { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; height: 270px; width: 270px; border: 1px solid #6a785b; border-radius: 50%; position: relative; }
+  .philosophy-symbol::after { content: ''; position: absolute; inset: 11px; border: 1px solid #4a614b; border-radius: 50%; }
+  .philosophy-symbol > svg { width: 135px; height: 135px; color: var(--gold); }
+  .philosophy-symbol > span { font-size: 0.55rem; letter-spacing: 0.2em; color: var(--gold); }
+  .philosophy-wrap { padding-bottom: 85px; }
+}
+@media (min-width: 1200px) {
+  .hero-visual { height: 580px; }
+  .hero-copy h1 { font-size: 5.25rem; }
+  .hero-description { font-size: 0.96rem; }
+}

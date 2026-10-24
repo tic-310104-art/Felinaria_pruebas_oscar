@@ -1,0 +1,32 @@
+:root {
+  --ivory: #f8f5ef;
+  --forest: #23392f;
+  --terracotta: #c66b45;
+  --gold: #d6b77a;
+  --charcoal: #252823;
+  --white: #fff;
+  --accent-ink: #a34e2d;
+  --muted: #68695f;
+  --line: #deddd2;
+  --sage: #e9ece3;
+  --paper: #f0ece3;
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans: 'DM Sans', Arial, sans-serif;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+  --radius: 12px;
+  --transition: 200ms ease;
+  font-family: var(--sans);
+  color: var(--charcoal);
+  background: var(--ivory);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
