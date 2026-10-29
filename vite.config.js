@@ -10,14 +10,15 @@ export default defineConfig({
       injectRegister: false,
       includeAssets: ['favicon.svg', 'favicon-32.png', 'icons/*.png'],
       manifest: {
-        name: 'Fierro 40k',
+        name: 'Fierro 40k - Recetario',
         short_name: 'Fierro 40k',
         description: 'Cocina a tu ritmo: pan francés, pollo a la naranja y mochis dulces, paso a paso.',
         lang: 'es',
-        id: './',
-        start_url: './',
-        scope: './',
+        id: '/',
+        start_url: '/',
+        scope: '/',
         display: 'standalone',
+        orientation: 'any',
         theme_color: '#23392f',
         background_color: '#f8f5ef',
         icons: [
@@ -27,7 +28,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{html,js,css,woff,woff2}'],
+        globPatterns: ['**/*.{html,js,css,woff,woff2,webp}'],
         cleanupOutdatedCaches: true,
         skipWaiting: false,
         clientsClaim: true,

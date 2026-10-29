@@ -35,13 +35,6 @@ def wait_photo(page):
     return image.evaluate('(img) => img.currentSrc')
 
 
-def photo_entries(page):
-    return page.evaluate('''async () => {
-        const cache = await caches.open('fierro-40k-recipe-photos-v1');
-        return (await cache.keys()).map(request => request.url);
-    }''')
-
-
 with sync_playwright() as p:
     browser = p.chromium.launch()
     context = browser.new_context(viewport={'width': 1440, 'height': 1000}, service_workers='allow')
@@ -51,7 +44,7 @@ with sync_playwright() as p:
     page.goto(base)
     page.wait_for_load_state('networkidle')
     controlled(page)
-    expect(page.get_by_text('Recetas listas sin conexión.', exact=False)).to_be_visible()
+    expect(page.get_by_text('Recetas y fotografías listas sin conexión.', exact=True)).to_be_visible()
     registrations = page.evaluate('navigator.serviceWorker.getRegistrations().then(items => items.length)')
     assert registrations == 1, registrations
     print('PASS: one active service-worker registration and offline-ready acknowledgement')
@@ -60,9 +53,12 @@ with sync_playwright() as p:
     response = context.request.get(manifest_url)
     assert response.ok
     manifest = response.json()
-    assert manifest['name'] == manifest['short_name'] == 'Fierro 40k'
+    assert manifest['name'] == 'Fierro 40k - Recetario'
+    assert manifest['short_name'] == 'Fierro 40k'
     assert manifest['display'] == 'standalone'
+    assert manifest['orientation'] == 'any'
     assert manifest['theme_color'].lower() == '#23392f'
+    assert manifest['background_color'].lower() == '#f8f5ef'
     for field in ['id', 'scope', 'start_url']:
         assert urljoin(manifest_url, manifest[field]) == base, (field, manifest[field])
     assert {(icon['sizes'], icon['purpose']) for icon in manifest['icons']} == {
@@ -83,6 +79,26 @@ with sync_playwright() as p:
     installability = cdp.send('Page.getInstallabilityErrors')
     assert not installability['installabilityErrors'], installability
     print('PASS: manifest, start/scope/id, PNG dimensions, opaque maskable icon, favicon and Chromium installability criteria')
+
+    cached = page.evaluate('''async () => (await Promise.all((await caches.keys()).map(async key =>
+        (await (await caches.open(key)).keys()).map(request => request.url)))).flat()''')
+    cached_paths = {urlparse(url).path for url in cached}
+    assert '/index.html' in cached_paths
+    assert '/manifest.webmanifest' in cached_paths
+    assert any(path.endswith('.js') for path in cached_paths)
+    assert any(path.endswith('.css') for path in cached_paths)
+    assert all(urlparse(urljoin(manifest_url, icon['src'])).path in cached_paths for icon in manifest['icons'])
+    for recipe in ['pan-frances', 'pollo-a-la-naranja', 'mochis-dulces']:
+        for size in [640, 800, 1440]:
+            assert any(f'/{recipe}-{size}-' in path and path.endswith('.webp') for path in cached_paths)
+    asset_types = page.evaluate(r'''async urls => Object.fromEntries(await Promise.all(urls
+        .filter(url => /\.(?:js|css|webp|png)$/.test(new URL(url).pathname))
+        .map(async url => [url, (await caches.match(url))?.headers.get('content-type') ?? ''])))''', cached)
+    for url, mime in asset_types.items():
+        extension = urlparse(url).path.rsplit('.', 1)[-1]
+        assert {'js': 'javascript' in mime, 'css': mime.startswith('text/css'),
+                'webp': mime.startswith('image/webp'), 'png': mime.startswith('image/png')}[extension], (url, mime)
+    print('PASS: precache contains HTML, manifest, JS, CSS, icons and all nine recipe photographs')
 
     # Test the capability-gated UI independently of headless browser prompt policy.
     page.evaluate('''() => {
@@ -115,10 +131,7 @@ with sync_playwright() as p:
         expect(page.locator('h1')).to_have_count(1)
     page.goto(urljoin(base, 'recetas/pan-frances'))
     warm_photo = wait_photo(page)
-    page.wait_for_function('''async url => {
-        const cache = await caches.open('fierro-40k-recipe-photos-v1');
-        return !!(await cache.match(url));
-    }''', arg=warm_photo)
+    assert page.evaluate('async url => !!(await caches.match(url))', warm_photo)
     page.evaluate("fetch('" + urljoin(base, 'api/pwa-cache-probe') + "', {headers: {Authorization: 'Bearer test-only'}})")
     entries = page.evaluate('''async () => {
         const entries = await Promise.all((await caches.keys()).map(async key =>
@@ -126,14 +139,17 @@ with sync_playwright() as p:
         return entries.flat();
     }''')
     assert not any('pwa-cache-probe' in url for url in entries)
-    # Simulate photographs evicted by the browser while keeping the app shell.
-    page.evaluate('''async () => {
-        const cache = await caches.open('fierro-40k-recipe-photos-v1');
-        for (const request of await cache.keys())
-            if (request.url.includes('pollo-a-la-naranja')) await cache.delete(request);
-    }''')
     context.set_offline(True)
+    missing_type = page.evaluate('''async () => {
+        try { return (await fetch('/assets/not-cached.webp')).headers.get('content-type') ?? '' }
+        catch { return '' }
+    }''')
+    assert 'html' not in missing_type, missing_type
+    page.goto(base)
+    expect(page.locator('h1')).to_contain_text('Cocinar también es crear')
     page.reload()
+    expect(page.locator('.recipe-card')).to_have_count(3)
+    page.goto(urljoin(base, 'recetas/pan-frances'))
     assert wait_photo(page) == warm_photo
     expect(page.get_by_text('Sin conexión. Puedes consultar las recetas;', exact=False)).to_be_visible()
     page.get_by_role('button', name='Guardar Pan francés en favoritos').click()
@@ -149,26 +165,23 @@ with sync_playwright() as p:
     expect(page.locator('.recipe-card')).to_have_count(1)
     page.goto(urljoin(base, 'recetas/pollo-a-la-naranja'))
     expect(page.locator('h1')).to_have_text('Pollo a la naranja')
-    expect(page.locator('.detail-hero .photo-fallback')).to_contain_text('Fotografía no disponible sin conexión.')
+    wait_photo(page)
     assert page.locator('.ingredients-list li').count() == 12
+    assert page.locator('.steps-list li').count() == 7
+    page.goto(urljoin(base, 'recetas/mochis-dulces'))
+    expect(page.locator('h1')).to_have_text('Mochis dulces')
+    wait_photo(page)
+    assert page.locator('.ingredients-list li').count() == 6
+    assert page.locator('.steps-list li').count() == 8
     page.goto(urljoin(base, 'no-existe'))
     expect(page.locator('h1')).to_have_count(1)
-    print('PASS: offline direct routes/reloads, cached photograph, search, favorites, persisted progress/portions, 404 and missing-photo fallback')
+    print('PASS: offline direct routes/reloads, all recipe photographs and content, search, favorites, persisted progress/portions and 404')
 
     page.goto(urljoin(base, 'recetas/pollo-a-la-naranja'))
     context.set_offline(False)
     page.wait_for_function('navigator.onLine')
-    retry = page.locator('.detail-hero').get_by_role('button', name='Reintentar fotografía')
-    expect(page.locator('.detail-hero img').or_(retry)).to_be_visible()
-    if retry.is_visible():
-        retry.click()
     wait_photo(page)
     expect(page.get_by_text('Sin conexión. Puedes consultar las recetas;', exact=False)).to_have_count(0)
-    page.wait_for_function('''async () => {
-        const keys = await (await caches.open('fierro-40k-recipe-photos-v1')).keys();
-        return keys.some(key => key.url.includes('pollo-a-la-naranja'));
-    }''')
-    assert len(photo_entries(page)) <= 12
     for width in [320, 375, 768, 1440]:
         page.set_viewport_size({'width': width, 'height': 900})
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
@@ -176,7 +189,7 @@ with sync_playwright() as p:
     expect(page.locator('.pwa-controls')).not_to_be_visible()
     page.emulate_media(media='screen')
     assert not errors, errors
-    print('PASS: photos recover on reconnection, bounded image cache, no cached API probe, responsive controls and print exclusion')
+    print('PASS: reconnection, no cached API probe, responsive controls and print exclusion')
     context.close()
 
     mobile = browser.new_context(viewport={'width': 375, 'height': 812}, device_scale_factor=2, is_mobile=True, has_touch=True)
@@ -190,7 +203,7 @@ with sync_playwright() as p:
     }''')
     mobile_photo = mobile_page.locator('.home-hero img').evaluate('(image) => image.currentSrc')
     assert '-800-' in mobile_photo, mobile_photo
-    mobile_page.wait_for_function('''async url => !!(await (await caches.open('fierro-40k-recipe-photos-v1')).match(url))''', arg=mobile_photo)
+    assert mobile_page.evaluate('async url => !!(await caches.match(url))', mobile_photo)
     mobile.set_offline(True)
     mobile_page.reload()
     mobile_page.wait_for_function("document.querySelector('.home-hero img')?.naturalWidth > 0")

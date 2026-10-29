@@ -17,7 +17,7 @@ export default function PwaControls() {
         {!online && <p className="pwa-status" role="status"><WifiOff size={18} aria-hidden="true" />Sin conexión. Puedes consultar las recetas; solo se mostrarán las fotos guardadas.</p>}
         {online && offlineReady && !updateAvailable && (
           <div className="pwa-status" role="status">
-            <p>Recetas listas sin conexión. Las fotos se guardan a medida que las consultas.</p>
+            <p>Recetas y fotografías listas sin conexión.</p>
             <button className="icon-button" aria-label="Cerrar aviso sin conexión" onClick={dismissOfflineReady}><X size={18} aria-hidden="true" /></button>
           </div>
         )}
